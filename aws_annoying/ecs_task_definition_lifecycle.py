@@ -22,6 +22,10 @@ def ecs_task_definition_lifecycle(
         min=1,
         max=100,
     ),
+    delete: bool = typer.Option(
+        False,  # noqa: FBT003
+        help="Delete the task definition after deregistering it.",
+    ),
     dry_run: bool = typer.Option(
         False,  # noqa: FBT003
         help="Do not perform any changes, only show what would be done.",
@@ -55,3 +59,7 @@ def ecs_task_definition_lifecycle(
         # ARN like: "arn:aws:ecs:<region>:<account-id>:task-definition/<family>:<revision>"
         _, family_revision = arn.split(":task-definition/")
         print(f"✅ Deregistered task definition [yellow]{family_revision!r}[/yellow]")
+
+    if delete:
+        ecs.delete_task_definitions(taskDefinitions=expired_taskdef_arns)
+        print(f"✅ Deleted {len(expired_taskdef_arns)} task definitions.")
