@@ -8,6 +8,7 @@
   },
   "autoDocstring.docstringFormat": "google-notypes",
   "cSpell.words": [
+    "Deregistering",
     "localstack",
     "Tampermonkey"
   ],

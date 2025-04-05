@@ -1,3 +1,4 @@
+⚠️ Deregistering 15 task definitions...
 ✅ Deregistered task definition 'my-task:1'
 ✅ Deregistered task definition 'my-task:2'
 ✅ Deregistered task definition 'my-task:3'
