@@ -6,16 +6,23 @@ authors = [{ name = "Yuchan Lee", email = "lasuillard@gmail.com" }]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.9, <4.0"
-dependencies = ["boto3>=1.37.1", "pydantic>=2.10.6", "typer>=0.15.1"]
+dependencies = [
+  "boto3>=1.37.1",
+  "requests>=2.32.3",
+  "tqdm>=4.67.1",
+  "typer>=0.15.1",
+  "pydantic>=2.10.6",
+]
 
 [project.scripts]
 "aws-annoying" = "aws_annoying.main:entrypoint"
 
 [project.optional-dependencies]
 dev = [
-  "boto3-stubs[ecs,secretsmanager,ssm,sts]>=1.37.1",
+  "boto3-stubs[ecs,secretsmanager,ssm,sts,ec2]>=1.37.1",
   "mypy~=1.15.0",
   "ruff>=0.9.9,<0.12.0",
+  "types-requests>=2.31.0.6",
 ]
 test = [
   "coverage>=7.6,<7.9",
@@ -92,12 +99,16 @@ addopts = [
   "--show-capture=no",
   "--junitxml=junit.xml",
   "--allow-snapshot-deletion",
+  "-m",
+  "not windows and not macos",
 ]
 testpaths = ["tests"]
 filterwarnings = ["ignore::DeprecationWarning::"]
 markers = [
-  "unit: mark test as unit test",
-  "integration: mark test as integration test",
+  "unit: Isolated unit tests",
+  "integration: Integration tests",
+  "macos: macOS specific test",
+  "windows: Windows specific test",
 ]
 
 [tool.coverage.run]

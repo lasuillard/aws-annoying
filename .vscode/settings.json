@@ -9,6 +9,7 @@
   "autoDocstring.docstringFormat": "google-notypes",
   "cSpell.words": [
     "localstack",
+    "sessionmanagerplugin",
     "Tampermonkey"
   ],
   "editor.formatOnSave": true,
