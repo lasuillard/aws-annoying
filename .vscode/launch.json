@@ -8,6 +8,14 @@
       "program": "${file}",
       "console": "integratedTerminal",
       "justMyCode": true
-    }
+    },
+    {
+      "name": "Python: Application CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "aws_annoying.cli.main",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
   ]
 }

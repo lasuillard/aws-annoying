@@ -7,8 +7,7 @@ import pytest
 from typer.testing import CliRunner
 
 from aws_annoying.cli.main import app
-
-from ._helpers import normalize_console_output
+from tests.cli._helpers import normalize_console_output
 
 if TYPE_CHECKING:
     from pytest_snapshot.plugin import Snapshot
@@ -45,7 +44,8 @@ def test_basic(snapshot: Snapshot) -> None:
     result = runner.invoke(
         app,
         [
-            "ecs-task-definition-lifecycle",
+            "ecs",
+            "task-definition-lifecycle",
             "--family",
             family,
             "--keep-latest",
@@ -96,7 +96,8 @@ def test_dry_run(snapshot: Snapshot) -> None:
         app,
         [
             "--dry-run",
-            "ecs-task-definition-lifecycle",
+            "ecs",
+            "task-definition-lifecycle",
             "--family",
             family,
             "--keep-latest",

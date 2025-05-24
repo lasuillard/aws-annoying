@@ -1,7 +1,7 @@
 # flake8: noqa: F401
 from __future__ import annotations
 
-import aws_annoying.cli.ecs_task_definition_lifecycle
+import aws_annoying.cli.ecs
 import aws_annoying.cli.load_variables
 import aws_annoying.cli.mfa
 import aws_annoying.cli.session_manager
