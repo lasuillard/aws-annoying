@@ -67,12 +67,17 @@ test = [
     { name = "types-toml" },
 ]
 
+[package.dev-dependencies]
+test = [
+    { name = "moto", extra = ["server", "ssm"] },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "boto3", specifier = ">=1,<2" },
     { name = "boto3-stubs", extras = ["ecs", "secretsmanager", "ssm", "sts", "ec2"], marker = "extra == 'dev'", specifier = ">=1.37.1" },
     { name = "coverage", marker = "extra == 'test'", specifier = ">=7.6,<7.9" },
-    { name = "moto", extras = ["secretsmanager", "server", "ssm", "ecs"], marker = "extra == 'test'", specifier = "~=5.1.1" },
+    { name = "moto", extras = ["secretsmanager", "server", "ssm", "ecs"], marker = "extra == 'test'", git = "https://github.com/lasuillard/moto" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.15,<1.17" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "pytest", marker = "extra == 'test'", specifier = "~=8.3.2" },
@@ -91,6 +96,9 @@ requires-dist = [
     { name = "types-toml", marker = "extra == 'test'", specifier = ">=0.10.8.20240310" },
 ]
 provides-extras = ["dev", "test"]
+
+[package.metadata.requires-dev]
+test = [{ name = "moto", extras = ["ecs", "secretsmanager", "server", "ssm"], git = "https://github.com/lasuillard/moto" }]
 
 [[package]]
 name = "aws-sam-translator"
@@ -859,8 +867,8 @@ wheels = [
 
 [[package]]
 name = "moto"
-version = "5.1.1"
-source = { registry = "https://pypi.org/simple" }
+version = "5.1.7.dev0"
+source = { git = "https://github.com/lasuillard/moto#2f034491e75363911aa969511350877cdf1be18b" }
 dependencies = [
     { name = "boto3" },
     { name = "botocore" },
@@ -871,10 +879,6 @@ dependencies = [
     { name = "responses" },
     { name = "werkzeug" },
     { name = "xmltodict" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ee/ee/88b514190cb4ece02b377ea61ff26b596fa967609c82aa2f2856bfae2f3e/moto-5.1.1.tar.gz", hash = "sha256:5b25dbc62cccd9f36ef062c870db49d976b241129024fab049e2d3d1296e2a57", size = 6647375, upload-time = "2025-03-02T19:48:06.408Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/36/e3d70d25064a03dfa13555bf26ca934bb2167df221065938278e1e1961eb/moto-5.1.1-py3-none-any.whl", hash = "sha256:615904d6210431950a59a2bdec365d60e791eacbe3dd07a3a5d742c88ef847dd", size = 4788429, upload-time = "2025-03-02T19:48:03.308Z" },
 ]
 
 [package.optional-dependencies]

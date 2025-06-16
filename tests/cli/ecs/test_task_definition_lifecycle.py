@@ -50,27 +50,101 @@ def test_basic(snapshot: Snapshot) -> None:
             family,
             "--keep-latest",
             str(keep_latest),
-            # ? `delete_task_definitions` not implemented in moto yet
-            # "--delete",
         ],
     )
-    task_definitions = [
-        ecs.describe_task_definition(taskDefinition=f"{family}:{i}")["taskDefinition"]
-        for i in range(1, num_task_defs + 1)
-    ]
 
     # Assert
     assert result.exit_code == 0
     snapshot.assert_match(normalize_console_output(result.stdout), "stdout.txt")
 
-    # ?: Moto (v5.1.1) `ecs.list_task_definitions` does not handle `status` filter properly
-    # ?:               + sorting also does not work (current behavior is ASC)
-    assert [td["revision"] for td in task_definitions if td["status"] == "INACTIVE"] == list(
-        range(1, num_task_defs - keep_latest + 1),  # 1..15
+    active_task_definitions = ecs.list_task_definitions(familyPrefix=family, status="ACTIVE")
+    assert active_task_definitions["taskDefinitionArns"] == [
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:16",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:17",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:18",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:19",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:20",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:21",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:22",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:23",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:24",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:25",
+    ]
+
+    inactive_task_definitions = ecs.list_task_definitions(familyPrefix=family, status="INACTIVE")
+    assert inactive_task_definitions["taskDefinitionArns"] == [
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:1",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:2",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:3",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:4",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:5",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:6",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:7",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:8",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:9",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:10",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:11",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:12",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:13",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:14",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:15",
+    ]
+
+
+def test_delete(snapshot: Snapshot) -> None:
+    """The command should deregister the oldest task definitions."""
+    # Arrange
+    ecs = boto3.client("ecs")
+    family = "my-task"
+    num_task_defs = 25
+    for i in range(1, num_task_defs + 1):
+        ecs.register_task_definition(
+            family=family,
+            containerDefinitions=[
+                {
+                    "name": "my-container",
+                    "image": f"my-image:{i}",
+                    "cpu": 0,
+                    "memory": 0,
+                },
+            ],
+        )
+
+    # Act
+    keep_latest = 10
+    result = runner.invoke(
+        app,
+        [
+            "ecs",
+            "task-definition-lifecycle",
+            "--family",
+            family,
+            "--keep-latest",
+            str(keep_latest),
+            "--delete",
+        ],
     )
-    assert [td["revision"] for td in task_definitions if td["status"] == "ACTIVE"] == list(
-        range(num_task_defs - keep_latest + 1, num_task_defs + 1),  # 16..25
-    )
+
+    # Assert
+    assert result.exit_code == 0
+    snapshot.assert_match(normalize_console_output(result.stdout), "stdout.txt")
+
+    active_task_definitions = ecs.list_task_definitions(familyPrefix=family, status="ACTIVE")
+    assert active_task_definitions["taskDefinitionArns"] == [
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:16",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:17",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:18",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:19",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:20",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:21",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:22",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:23",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:24",
+        "arn:aws:ecs:us-east-1:123456789012:task-definition/my-task:25",
+    ]
+
+    inactive_task_definitions = ecs.list_task_definitions(familyPrefix=family, status="INACTIVE")
+    assert inactive_task_definitions["taskDefinitionArns"] == []
 
 
 def test_dry_run(snapshot: Snapshot) -> None:
@@ -107,16 +181,13 @@ def test_dry_run(snapshot: Snapshot) -> None:
             "--delete",
         ],
     )
-    task_definitions = [
-        ecs.describe_task_definition(taskDefinition=f"{family}:{i}")["taskDefinition"]
-        for i in range(1, num_task_defs + 1)
-    ]
 
     # Assert
     assert result.exit_code == 0
     snapshot.assert_match(normalize_console_output(result.stdout), "stdout.txt")
 
-    # ?: Moto (v5.1.1) `ecs.list_task_definitions` does not handle `status` filter properly
-    # ?:               + sorting also does not work (current behavior is ASC)
-    assert [td["revision"] for td in task_definitions if td["status"] == "INACTIVE"] == []
-    assert len([td["revision"] for td in task_definitions if td["status"] == "ACTIVE"]) == num_task_defs
+    active_task_definitions = ecs.list_task_definitions(familyPrefix=family, status="ACTIVE")
+    assert len(active_task_definitions["taskDefinitionArns"]) == 25
+
+    inactive_task_definitions = ecs.list_task_definitions(familyPrefix=family, status="INACTIVE")
+    assert len(inactive_task_definitions["taskDefinitionArns"]) == 0
