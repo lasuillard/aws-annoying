@@ -1,0 +1,19 @@
+⚠️ Deregistering 15 task definitions...
+⚠️ Deregistered task definition 'my-task:1'
+⚠️ Deregistered task definition 'my-task:2'
+⚠️ Deregistered task definition 'my-task:3'
+⚠️ Deregistered task definition 'my-task:4'
+⚠️ Deregistered task definition 'my-task:5'
+⚠️ Deregistered task definition 'my-task:6'
+⚠️ Deregistered task definition 'my-task:7'
+⚠️ Deregistered task definition 'my-task:8'
+⚠️ Deregistered task definition 'my-task:9'
+⚠️ Deregistered task definition 'my-task:10'
+⚠️ Deregistered task definition 'my-task:11'
+⚠️ Deregistered task definition 'my-task:12'
+⚠️ Deregistered task definition 'my-task:13'
+⚠️ Deregistered task definition 'my-task:14'
+⚠️ Deregistered task definition 'my-task:15'
+⚠️ Deleting 15 task definitions in chunks of size 10...
+⚠️ Deleted 10 task definitions in 0-th batch.
+⚠️ Deleted 5 task definitions in 1-th batch.
